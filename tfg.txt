@@ -1,0 +1,8 @@
+Ayudas a la edicion:
+poder borrar puerta con supr
+puerta de separación
+
+Union de puertas arrastrando con el raton
+Eliminar modificar puerta
+Exportar parte de circuito
+
