@@ -17,12 +17,14 @@
 import {Config} from "../Config.js"
 import {GateBuilder} from "../circuit/Gate.js"
 import {GatePainting} from "../draw/GatePainting.js"
+import {Gate} from "../circuit/Gate.js"
 import {Rect} from "../math/Rect.js"
 
-let SpacerGate = new GateBuilder().
+let SpacerGate = Gate.buildFamily(1, 16, (span, builder) => builder.
     setSerializedIdAndSymbol("…").
     setTitle("Spacer").
     setBlurb("A gate with no effect.").
+    
     markAsNotInterestedInControls().
     promiseHasNoNetEffectOnStateVector().
     setDrawer(args => {
@@ -43,7 +45,6 @@ let SpacerGate = new GateBuilder().
         args.painter.fillCircle(args.rect.center().offsetBy(7, 0), 2, "black");
         args.painter.fillCircle(args.rect.center(), 2, "black");
         args.painter.fillCircle(args.rect.center().offsetBy(-7, 0), 2, "black");
-    }).
-    gate;
+    }));
 
 export {SpacerGate}
