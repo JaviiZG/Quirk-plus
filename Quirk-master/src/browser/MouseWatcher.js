@@ -143,6 +143,10 @@ class DragWatcher {
         this._lastEv = ev;
 
         this._grabHandler(pt, ev);
+
+        if(document.getElementById('menu') !== null) {
+            document.body.removeChild(document.getElementById('menu'));
+        }
     }
 
     /**
@@ -202,6 +206,19 @@ class DragWatcher {
         this._lastPos = undefined;
         this._lastEv = undefined;
         this._grabPointerId = undefined;
+
+        // var menu = document.createElement("div");
+        //     menu.textContent = "Opciones del menú";
+        //     menu.id = "menu";
+        //     menu.style.position = "absolute";
+        //     menu.style.left = ev.clientX + "px";
+        //     menu.style.top = ev.clientY + "px";
+        // document.body.appendChild(menu);
+        // var ul = document.createElement("ul");
+        //     menu.appendChild(ul);
+        // var li = document.createElement("li");
+        //     li.textContent = "Opción 1";
+        //     ul.appendChild(li);
 
         this._dropHandler(pt, ev);
     }

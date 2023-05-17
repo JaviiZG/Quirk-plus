@@ -247,6 +247,47 @@ watchDrags(canvasDiv,
         let clearHand = newInspector.hand.withPos(undefined);
         let clearInspector = newInspector.withJustEnoughWires(clearHand, 0);
         revision.commit(clearInspector.snapshot());
+
+        var menu = document.createElement("div");
+            menu.textContent = "Menú";
+            menu.id = "menu";
+            menu.style.position = "absolute";
+            menu.style.zIndex = "100";
+            menu.style.backgroundColor = "#5edbec";
+            menu.style.left = pt.x + "px";
+            menu.style.top = pt.y+50 + "px";
+        document.body.appendChild(menu);
+        var ul = document.createElement("ul");
+            menu.appendChild(ul);
+        var del = document.createElement("button");
+            del.id = "del";
+            del.textContent = "Borrar";
+            ul.appendChild(del);
+
+        document.getElementById("del").addEventListener("click", function(){
+            let cur = syncArea(displayed.get());
+            let initOver = cur.tryGetHandOverButtonKey();
+            let newHand = cur.hand.withPos(eventPosRelativeTo(ev, canvas));
+            let newInspector;
+            if (initOver !== undefined && initOver.startsWith('wire-init-')) {
+                let newCircuit = cur.displayedCircuit.circuitDefinition.withSwitchedInitialStateOn(
+                    parseInt(initOver.substr(10)), 0);
+                newInspector = cur.withCircuitDefinition(newCircuit).withHand(newHand).afterTidyingUp();
+            } else {
+                newInspector = cur.
+                    withHand(newHand).
+                    afterGrabbing(false, false, true, false). // Grab the gate.
+                    withHand(newHand). // Lose the gate.
+                    afterTidyingUp().
+                    withJustEnoughWires(newHand, 0);
+            }
+            if (!displayed.get().isEqualTo(newInspector)) {
+                revision.commit(newInspector.snapshot());
+                ev.preventDefault();
+            }
+            document.body.removeChild(menu);
+        });
+
         ev.preventDefault();
     });
 
