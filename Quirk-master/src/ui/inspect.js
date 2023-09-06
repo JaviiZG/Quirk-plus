@@ -52,8 +52,10 @@ function initInspect(revision, obsIsAnyOverlayShowing) {
 
         let cols = 0;
         inspectButton.addEventListener('click', () => {
+            const loc = location.toString().split("#")[0];
             if (inspectButton.checked) {
                 inspectButton.style.backgroundColor = "#74ff67";
+                console.log("location: "+loc);
                 inspectDiv.style.display = 'inline-block';
                 cols = 0;
                 backButton = /** @type {!HTMLButtonElement} */ document.getElementById('back-button');
@@ -61,51 +63,58 @@ function initInspect(revision, obsIsAnyOverlayShowing) {
                 nextButton = /** @type {!HTMLButtonElement} */ document.getElementById('next-button');
                 finalButton = /** @type {!HTMLButtonElement} */ document.getElementById('final-button');
                 let url = decodeURI(window.location);
-                let val = JSON.parse(url.split("=")[1]);
-                sessionStorage.setItem("circuit", JSON.stringify(val));
-                if(val.cols.length > 1) {
-                    val.cols = [val.cols[cols]];
-                    backButton.addEventListener('click', () => {
-                        if(cols > 0) {
-                            cols--;
-                            val.cols = reduceColumns(val.cols);
-                            location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
-                        }
-                    });
-                    nextButton.addEventListener('click', () => {
-                        let prevval = JSON.parse(sessionStorage.getItem("circuit"));
-                        if(cols < prevval.cols.length-1) {
-                            cols++;
-                            val.cols = (val.cols).concat([prevval.cols[cols]]);
-                            location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
-                        }
-                    });
-                    startButton.addEventListener('click', () => {
-                        val = JSON.parse(sessionStorage.getItem("circuit"));
-                        cols = 0;
-                        val.cols = [val.cols[0]];
-                        location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
-                    });
-                    finalButton.addEventListener('click', () => {
-                        val = JSON.parse(sessionStorage.getItem("circuit"));
-                        cols = val.cols.length-1;
-                        location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
-                    });
-                    console.log("file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, ''));
-                    location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
+                if(url.split("=")[1]!=undefined){
+                    let val = JSON.parse(url.split("=")[1]);
+                    console.log(val.cols);
+                    sessionStorage.setItem("circuit", JSON.stringify(val));
+                    if(val.cols.length > 1) {
+                        val.cols = [val.cols[cols]];
+                        backButton.addEventListener('click', () => {
+                            if(cols > 0) {
+                                cols--;
+                                val.cols = reduceColumns(val.cols);
+                                location.href = loc+"#circuit="+JSON.stringify(val, null, '');
+                            }
+                        });
+                        nextButton.addEventListener('click', () => {
+                            let prevval = JSON.parse(sessionStorage.getItem("circuit"));
+                            if(cols < prevval.cols.length-1) {
+                                cols++;
+                                val.cols = (val.cols).concat([prevval.cols[cols]]);
+                                location.href = loc+"#circuit="+JSON.stringify(val, null, '');
+                            }
+                        });
+                        startButton.addEventListener('click', () => {
+                            val = JSON.parse(sessionStorage.getItem("circuit"));
+                            cols = 0;
+                            val.cols = [val.cols[0]];
+                            location.href = loc+"#circuit="+JSON.stringify(val, null, '');
+                        });
+                        finalButton.addEventListener('click', () => {
+                            val = JSON.parse(sessionStorage.getItem("circuit"));
+                            cols = val.cols.length-1;
+                            location.href = loc+"#circuit="+JSON.stringify(val, null, '');
+                        });
+                        console.log(loc+"#circuit="+JSON.stringify(val, null, ''));
+                        location.href = loc+"#circuit="+JSON.stringify(val, null, '');
+                    }
                 }
             }
             else {
+                let url = decodeURI(window.location);
                 inspectDiv.style.display = 'none';
                 inspectButton.style.backgroundColor = "#FFFFFF";
-                val = JSON.parse(sessionStorage.getItem("circuit"));
-                cols = 0;
                 backButton.replaceWith(backButton.cloneNode(true));
                 nextButton.replaceWith(nextButton.cloneNode(true));
                 startButton.replaceWith(startButton.cloneNode(true));
                 finalButton.replaceWith(finalButton.cloneNode(true));
-                location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
-                sessionStorage.removeItem("circuit");
+                if(url.split("=")[1]!=undefined){
+                    
+                    val = JSON.parse(sessionStorage.getItem("circuit"));
+                    cols = 0;
+                    location.href = loc+"#circuit="+JSON.stringify(val, null, '');
+                    sessionStorage.removeItem("circuit");
+                }
                 // location.reload();
             }
             

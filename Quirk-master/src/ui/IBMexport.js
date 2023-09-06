@@ -152,7 +152,7 @@ qreg q[${max}];
         importButton.addEventListener('click', () => {
             const input = document.getElementById('formFile');
             const file = input.files[0];
-            console.log(file);
+            //console.log(file);
             const reader = new FileReader();
             reader.readAsText(file);
 
@@ -161,9 +161,9 @@ qreg q[${max}];
                 // console.log(text);
                 const maxQubits = text[3].split("")[7];
                 const cols = [];
-                for (var m = 0; m < maxQubits; m++) {
-                    cols.push([]);
-                }
+                // for (var m = 0; m < maxQubits; m++) {
+                //     cols.push([]);
+                // }
                 for (var j = 0; j < maxQubits; j++) {
                     var col = [];
                     // console.log(cols);
@@ -175,6 +175,13 @@ qreg q[${max}];
                             col.push(text[i]);
                         }
                     }
+                    if(cols.length<col.length){
+                        for(var w = cols.length; w < col.length; w++){
+                            cols.push([]);
+                        }
+                    }
+                    console.log("col: "+col);
+                    console.log("cols: "+cols);
                     for(var c = 0; c < col.length; c++){
                         if(col[c].includes("barrier")){
                             cols[c].push("...1");
@@ -198,12 +205,15 @@ qreg q[${max}];
                             cols[c].push("Z^¼")
                         }
                     }
+
+                    //console.log(cols[j]);
                     // console.log(cols);
                 }
-                console.log(JSON.stringify(cols));
+                //console.log(JSON.stringify(cols));
                 // let url = decodeURI(window.location);
                 // let val = JSON.parse(url.split("=")[1]);
-                location.href = 'file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit={"cols":'+JSON.stringify(cols)+'}';
+                const loc = location.toString().split("#")[0];
+                location.href = loc+'#circuit={"cols":'+JSON.stringify(cols)+'}';
                 exportsIsVisible.set(false);
             };
         });

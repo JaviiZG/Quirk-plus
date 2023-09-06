@@ -338,7 +338,8 @@ watchDrags(canvasDiv,
                                             }
                                         }
                                     }
-                                    location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
+                                    const loc = location.toString().split("#")[0];
+                                    location.href = loc+"#circuit="+JSON.stringify(val, null, '');
                                     // let newInspector = syncArea(displayed.get()).withHand(newHand).afterDropping().afterTidyingUp();
                                     // let clearHand = newInspector.hand.withPos(undefined);
                                     // let clearInspector = newInspector.withJustEnoughWires(clearHand, 0);

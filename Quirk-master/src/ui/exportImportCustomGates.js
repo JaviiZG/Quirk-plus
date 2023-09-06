@@ -134,10 +134,12 @@ function initExportsCustom(revision, obsIsAnyOverlayShowing) {
                     let introducedVals = JSON.parse(jsonTextElement.value);
                     // let val = JSON.parse(jsonText);
                     let location = window.location;
+                    const loc = location.toString().split("#")[0];
                     if(val.gates === undefined){
                         val.gates = introducedVals;
                         // console.log(val.gates);
-                        location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
+                        console.log(loc+"#circuit="+JSON.stringify(val, null, ''))
+                        location.href = loc+"#circuit="+JSON.stringify(val, null, '');
                         // location.reload(true);
                         
                     }else{
@@ -145,12 +147,12 @@ function initExportsCustom(revision, obsIsAnyOverlayShowing) {
                         // val.gates = (introducedVals.concat(val.gates));
                         val.gates = (concatWithCheck(introducedVals, val.gates));
                         // console.log("valgates", JSON.stringify(val.gates, null, ''));
-                        location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
+                        location.href = loc+"#circuit="+JSON.stringify(val, null, '');
                     }
                     // console.log(val);
                     // jsonTextElement.innerText = JSON.stringify(val.gates, null, '  ');
                 } catch (_) {
-                    jsonTextElement.innerText = jsonText;
+                    //jsonTextElement.innerText = jsonText;
                 }
             });
             
