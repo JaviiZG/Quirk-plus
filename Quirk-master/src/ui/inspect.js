@@ -109,7 +109,6 @@ function initInspect(revision, obsIsAnyOverlayShowing) {
                 startButton.replaceWith(startButton.cloneNode(true));
                 finalButton.replaceWith(finalButton.cloneNode(true));
                 if(url.split("=")[1]!=undefined){
-                    
                     val = JSON.parse(sessionStorage.getItem("circuit"));
                     cols = 0;
                     location.href = loc+"#circuit="+JSON.stringify(val, null, '');
