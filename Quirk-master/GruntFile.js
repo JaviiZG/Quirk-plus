@@ -170,13 +170,17 @@ module.exports = function(grunt) {
         var errPart = grunt.file.read('html/error.partial.html');
         var forgePart = grunt.file.read('html/forge.partial.html');
         var exportPart = grunt.file.read('html/export.partial.html');
+        var exportImportPart = grunt.file.read('html/exportCustomGates.partial.html');
         var menuPart = grunt.file.read('html/menu.partial.html');
+        var ibmexportPart = grunt.file.read('html/IBMexport.partial.html');
         var output = html;
         output = output.split("<!-- INCLUDE SOURCE PART -->").join(js);
         output = output.split("<!-- INCLUDE MENU PART -->").join(menuPart);
         output = output.split("<!-- INCLUDE ERROR PART -->").join(errPart);
         output = output.split("<!-- INCLUDE FORGE PART -->").join(forgePart);
         output = output.split("<!-- INCLUDE EXPORT PART -->").join(exportPart);
+        output = output.split("<!-- INCLUDE IBM PART -->").join(ibmexportPart);
+        output = output.split("<!-- INCLUDE EXPORT IMPORT PART -->").join(exportImportPart);
         grunt.file.write(dst, output);
     });
 

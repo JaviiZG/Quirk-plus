@@ -185,6 +185,7 @@ function initExports(revision, mostRecentStats, obsIsAnyOverlayShowing) {
             saveFile(fileNameForState(latest), moddedHtml);
         });
     })();
+
 }
 
 export {initExports, obsExportsIsShowing}

@@ -1,0 +1,20 @@
+<div id="export-to-ibm-div" style="display:none;">
+    <div id="export-to-ibm-overlay" style="position:fixed; left: 0; top: 0; height: 100vh; width: 100vw; background: rgba(0, 0, 0, 0.7);">
+    </div>
+    <div style="position: absolute; top: 20px; left: 50px; padding: 20px; background-color: white; border: 1px solid black;">
+        
+        <strong>Export to IBM quantum composer</strong> - Qasm with the current circuit.
+        <div style="margin: 10px 0 30px 0;">
+            <button tabindex="108" class="btn btn-bd-primary" id="export-to-ibm-button" style="width:624px; height:60px;">Download .qasm</button>
+        </div>
+
+        <strong>Import from IBM quantum composer</strong> - Generate a circuit from a qasm.
+        <div style="margin: 10px 0 30px 0;">
+            <div class="mb-3">
+                <!-- <label for="formFile" class="form-label">Default file input example</label> -->
+                <input class="form-control" type="file" id="formFile" accept=".qasm">
+                <button tabindex="108" class="btn btn-bd-primary mt-3" id="import-from-ibm-button" style="width:624px; height:60px;">Import .qasm</button>
+            </div>
+        </div>
+    </div>
+</div>

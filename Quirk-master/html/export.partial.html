@@ -3,31 +3,32 @@
     </div>
     <div style="position: absolute; top: 20px; left: 50px; padding: 20px; background-color: white; border: 1px solid black;">
         <strong>Escaped Link</strong> - Link to current circuit, without special characters that confuse forums.
-        <div style="margin: 10px 0 30px 20px;">
-            <button tabindex="100" id="export-link-copy-button">Copy to Clipboard</button>&nbsp;&nbsp;<span id="export-link-copy-result"></span>
-            <div style="overflow:auto; word-wrap:break-word; max-height:60px; max-width:600px; border: 1px solid black; padding: 10px; margin: 2px;"><a tabindex="101" id="export-escaped-anchor"></a></div>
+        <div style="margin: 10px 0 30px 0;">
+            <button tabindex="100" class="btn btn-bd-primary" id="export-link-copy-button">Copy to Clipboard</button>&nbsp;&nbsp;<span id="export-link-copy-result"></span>
+            <div  class="form-control" style="overflow:auto; word-wrap:break-word; max-height:60px; max-width:624px; border: 1px solid black; padding: 10px; margin: 2px;"><a tabindex="101" id="export-escaped-anchor"></a></div>
         </div>
 
         <strong>Offline Copy</strong> - Html file containing Quirk and the current circuit.
-        <div style="margin: 10px 0 30px 20px;">
-            <button tabindex="102" id="download-offline-copy-button" style="width:600px; height:60px;">Download ...</button>
+        <div style="margin: 10px 0 30px 0;">
+            <button tabindex="102" class="btn btn-bd-primary" id="download-offline-copy-button" style="width:100%; height:60px;">Download ...</button>
         </div>
 
         <strong>Circuit JSON</strong> - Parsable representation of current circuit.
-        <div style="margin: 10px 0 0 20px;">
-            <button tabindex="103" id="export-json-copy-button">Copy to Clipboard</button>&nbsp;&nbsp;<span id="export-json-copy-result"></span>
+        <div style="margin: 10px 0 0 0;">
+            <button tabindex="103" class="btn btn-bd-primary" id="export-json-copy-button">Copy to Clipboard</button>&nbsp;&nbsp;<span id="export-json-copy-result"></span>
             <br>
-            <pre tabindex="104" id="export-circuit-json-pre" style="overflow:auto; max-width:600px; max-height:60px; border: 1px solid black; padding:5px; margin:2px;"></pre>
+            <pre tabindex="104" class="form-control" id="export-circuit-json-pre" style="overflow:auto; max-width:624px; max-height:60px; border: 1px solid black; padding:5px; margin:2px;"></pre>
         </div>
-
+        
         <br>
         <strong>Simulation Data JSON</strong> - Output amplitudes, detector results, display data, etc.
-        <div style="margin: 10px 0 0 20px;">
-            <button tabindex="105" id="export-amplitudes-button">Generate and Copy to Clipboard</button>&nbsp;<span id="export-amplitudes-result"></span>
+        <div style="margin: 10px 0 0 0;">
+            <button tabindex="105" class="btn btn-bd-primary" id="export-amplitudes-button">Generate and Copy to Clipboard</button>&nbsp;<span id="export-amplitudes-result"></span>
             <input type="checkbox" tabindex="106" id="export-amplitudes-use-amps" style="float: right; margin-right: 10px;">
             <label style="float: right" for="export-amplitudes-use-amps">Skip output amplitudes</label>
             <br>
-            <pre tabindex="107" id="export-amplitudes-pre" style="overflow:auto; max-width:600px; max-height:60px; border: 1px solid black; padding:5px; margin:2px;"></pre>
+            <pre tabindex="107" class="form-control" id="export-amplitudes-pre" style="overflow:auto; max-width:624px; max-height:60px; border: 1px solid black; padding:5px; margin:2px;"></pre>
         </div>
+
     </div>
 </div>

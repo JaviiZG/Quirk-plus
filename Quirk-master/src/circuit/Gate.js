@@ -362,6 +362,26 @@ class Gate {
 
         return {all: gates, ofSize};
     }
+    
+    static buildFamilySpacer(minSize, maxSize) {
+        let gates = [];
+        for (let span = minSize; span <= maxSize; span++) {
+            let builder = new GateBuilder();
+            builder.setHeight(span);
+            gates.push(builder.gate);
+        }
+
+        let ofSize = h => {
+            for (let g of gates) {
+                if (g.height === h) {
+                    return g;
+                }
+            }
+            return undefined;
+        };
+
+        return {all: gates};
+    }
 
     /**
      * Returns context keys required by this gate, including keys inherited from its custom circuit (if applicable).

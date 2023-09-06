@@ -36,10 +36,13 @@ import {initializedWglContext} from "./webgl/WglContext.js"
 import {watchDrags, isMiddleClicking, eventPosRelativeTo} from "./browser/MouseWatcher.js"
 import {ObservableValue, ObservableSource} from "./base/Obs.js"
 import {initExports, obsExportsIsShowing} from "./ui/exports.js"
+import { initExportsCustom } from "./ui/exportImportCustomGates.js";
 import {initForge, obsForgeIsShowing} from "./ui/forge.js"
 import {initMenu, obsMenuIsShowing, closeMenu} from "./ui/menu.js"
 import {initUndoRedo} from "./ui/undo.js"
+import { initExportIBM } from "./ui/IBMexport.js";
 import {initClear} from "./ui/clear.js"
+import { initInspect } from "./ui/inspect.js";
 import {initUrlCircuitSync} from "./ui/url.js"
 import {initTitleSync} from "./ui/title.js"
 import {simulate} from "./ui/sim.js"
@@ -47,6 +50,7 @@ import {GatePainting} from "./draw/GatePainting.js"
 import {GATE_CIRCUIT_DRAWER} from "./ui/DisplayedCircuit.js"
 import {GateColumn} from "./circuit/GateColumn.js";
 import {Point} from "./math/Point.js";
+import { DisplayedCircuit } from "./ui/DisplayedCircuit.js";
 initSerializer(
     GatePainting.LABEL_DRAWER,
     GatePainting.MATRIX_DRAWER,
@@ -243,50 +247,145 @@ watchDrags(canvasDiv,
         }
 
         let newHand = displayed.get().hand.withPos(pt);
+        // console.log(newHand.heldGate.serializedId[0]);
         let newInspector = syncArea(displayed.get()).withHand(newHand).afterDropping().afterTidyingUp();
         let clearHand = newInspector.hand.withPos(undefined);
         let clearInspector = newInspector.withJustEnoughWires(clearHand, 0);
+        let displayedCircuit = newInspector.displayedCircuit;
         revision.commit(clearInspector.snapshot());
-
-        var menu = document.createElement("div");
-            menu.textContent = "Menú";
-            menu.id = "menu";
-            menu.style.position = "absolute";
-            menu.style.zIndex = "100";
-            menu.style.backgroundColor = "#5edbec";
-            menu.style.left = pt.x + "px";
-            menu.style.top = pt.y+50 + "px";
-        document.body.appendChild(menu);
-        var ul = document.createElement("ul");
-            menu.appendChild(ul);
-        var del = document.createElement("button");
-            del.id = "del";
-            del.textContent = "Borrar";
-            ul.appendChild(del);
-
-        document.getElementById("del").addEventListener("click", function(){
-            let cur = syncArea(displayed.get());
-            let initOver = cur.tryGetHandOverButtonKey();
-            let newHand = cur.hand.withPos(eventPosRelativeTo(ev, canvas));
-            let newInspector;
-            if (initOver !== undefined && initOver.startsWith('wire-init-')) {
-                let newCircuit = cur.displayedCircuit.circuitDefinition.withSwitchedInitialStateOn(
-                    parseInt(initOver.substr(10)), 0);
-                newInspector = cur.withCircuitDefinition(newCircuit).withHand(newHand).afterTidyingUp();
-            } else {
-                newInspector = cur.
-                    withHand(newHand).
-                    afterGrabbing(false, false, true, false). // Grab the gate.
-                    withHand(newHand). // Lose the gate.
-                    afterTidyingUp().
-                    withJustEnoughWires(newHand, 0);
+        if (displayedCircuit.findGateOverlappingPos(newHand.pos) !== undefined) {
+            var menu = document.createElement("div");
+                // menu.textContent = "Menú";
+                menu.id = "menu";
+                menu.classList = "d-flex flex-column align-items-left justify-content-left p-2 rounded-2";
+                menu.style.position = "absolute";
+                menu.style.zIndex = "100";
+                menu.style.backgroundColor = "#00bbbb";
+                menu.style.left = pt.x + "px";
+                menu.style.top = pt.y+50 + "px";
+                document.body.appendChild(menu);
+            var ul = document.createElement("ul");
+                ul.classList = "ps-0 mb-0";
+                menu.appendChild(ul);
+            var del = document.createElement("button");
+                del.classList = "btn btn-bd-primary btn-sm me-2";
+                del.id = "del";
+                del.textContent = "Delete";
+                ul.appendChild(del);
+            var dup = document.createElement("button");
+                dup.classList = "btn btn-bd-primary btn-sm";
+                dup.id = "dup";
+                dup.textContent = "Duplicate";
+                ul.appendChild(dup);
+            if(newHand.heldGate !== undefined){
+                if(newHand.heldGate.serializedId[0] === "~"){
+                    let url = decodeURI(window.location);
+                    let val = JSON.parse(url.split("=")[1]);
+                    let array = [];
+                    for(let i = 0; i < val.gates.length; i++){
+                        // console.log(val.gates[i].id);
+                        // console.log(newHand.heldGate.serializedId);
+                        if(val.gates[i].id === newHand.heldGate.serializedId){
+                            if(val.gates[i].circuit !== undefined){
+                                var unzip = document.createElement("button");
+                                    unzip.classList = "btn btn-bd-primary btn-sm ms-2";
+                                    unzip.id = "unzip";
+                                    unzip.textContent = "Unzip";
+                                    ul.appendChild(unzip);
+                            }
+                        }
+                    }
+                }
             }
-            if (!displayed.get().isEqualTo(newInspector)) {
-                revision.commit(newInspector.snapshot());
-                ev.preventDefault();
+
+            if(newHand.heldGate !== undefined){
+                if(newHand.heldGate.serializedId[0] == "~"){
+                    let url = decodeURI(window.location);
+                    let val = JSON.parse(url.split("=")[1]);
+                    let array = [];
+                    for(let i = 0; i < val.gates.length; i++){
+                        if(val.gates[i].id === newHand.heldGate.serializedId){
+                            if(val.gates[i].circuit !== undefined){
+                                array = val.gates[i].circuit.cols;
+                                
+                                document.getElementById("unzip").addEventListener("click", function(){
+                                    // console.log(array);
+                                    for(let i = 0 ; i < val.cols.length; i++){
+                                        for(let j = 0 ; j<val.cols[i].length; j++){
+                                            if(val.cols[i][j] === newHand.heldGate.serializedId){
+                                                console.log(array.length);
+                                                for(let w = 0; w < array.length; w++){
+                                                    if(w!==0){
+                                                        val.cols.push([]);
+                                                        console.log("pre cols: "+val.cols[val.cols.length-1]);
+                                                        for(let z = val.cols.length-1; z > i+w; z--){
+                                                            val.cols[z] = val.cols[z-1].slice();
+                                                        }
+                                                        val.cols[i+w]=[];
+                                                        for(let z = 0; z < j; z++){
+                                                            val.cols[i+w].push(1);
+                                                        }
+                                                    }
+                                                    for(let k = 0; k < array[w].length; k++){
+                                                        val.cols[i+w][j+k] = array[w][k];
+                                                        console.log("post cols 1: "+val.cols[val.cols.length-2]);
+                                                        console.log("post cols 2: "+val.cols[val.cols.length-1]);
+                                                        // console.log("pos["+w+"]["+k+"]: "+array[w][k]);
+                                                    }
+                                                }
+                                                // val.cols[i][j] = array[0][0];
+                                                // console.log("post "+val.cols[i][j]);
+                                            }
+                                        }
+                                    }
+                                    location.href = "file:///D:/UMA/tfg/Quirk-master/out/quirk.html#circuit="+JSON.stringify(val, null, '');
+                                    // let newInspector = syncArea(displayed.get()).withHand(newHand).afterDropping().afterTidyingUp();
+                                    // let clearHand = newInspector.hand.withPos(undefined);
+                                    // let clearInspector = newInspector.withJustEnoughWires(clearHand, 0);
+                                    // revision.commit(clearInspector.snapshot());
+                                    // newHand.heldGate.height = 2;
+                                    document.body.removeChild(menu);
+                                });
+                            }
+                        }
+                    }
+                }
             }
-            document.body.removeChild(menu);
-        });
+
+            document.getElementById("dup").addEventListener("click", function(){
+                //console.log(newHand);
+                let newInspector = syncArea(displayed.get()).withHand(newHand).afterDropping().afterTidyingUp();
+                let clearHand = newInspector.hand.withPos(undefined);
+                let clearInspector = newInspector.withJustEnoughWires(clearHand, 0);
+                let displayedCircuit = newInspector.displayedCircuit;
+                revision.commit(clearInspector.snapshot());
+                document.body.removeChild(menu);
+            });
+
+            document.getElementById("del").addEventListener("click", function(){
+                let cur = syncArea(displayed.get());
+                let initOver = cur.tryGetHandOverButtonKey();
+                let newHand = cur.hand.withPos(eventPosRelativeTo(ev, canvas));
+                let newInspector;
+                if (initOver !== undefined && initOver.startsWith('wire-init-')) {
+                    let newCircuit = cur.displayedCircuit.circuitDefinition.withSwitchedInitialStateOn(
+                        parseInt(initOver.substr(10)), 0);
+                    newInspector = cur.withCircuitDefinition(newCircuit).withHand(newHand).afterTidyingUp();
+                } else {
+                    newInspector = cur.
+                        withHand(newHand).
+                        afterGrabbing(false, false, true, false). // Grab the gate.
+                        withHand(newHand). // Lose the gate.
+                        afterTidyingUp().
+                        withJustEnoughWires(newHand, 0);
+                }
+                if (!displayed.get().isEqualTo(newInspector)) {
+                    revision.commit(newInspector.snapshot());
+                    ev.preventDefault();
+                }
+                document.body.removeChild(menu);
+            });
+        }
 
         ev.preventDefault();
     });
@@ -311,6 +410,9 @@ canvasDiv.addEventListener('mousedown', ev => {
             withHand(newHand). // Lose the gate.
             afterTidyingUp().
             withJustEnoughWires(newHand, 0);
+            if(document.getElementById('menu') !== null) {
+                document.body.removeChild(document.getElementById('menu'));
+            }
     }
     if (!displayed.get().isEqualTo(newInspector)) {
         revision.commit(newInspector.snapshot());
@@ -341,6 +443,9 @@ initForge(revision, obsIsAnyOverlayShowing.observable());
 initUndoRedo(revision, obsIsAnyOverlayShowing.observable());
 initClear(revision, obsIsAnyOverlayShowing.observable());
 initMenu(revision, obsIsAnyOverlayShowing.observable());
+initExportIBM(revision, obsIsAnyOverlayShowing.observable());
+initInspect(revision, obsIsAnyOverlayShowing.observable());
+initExportsCustom(revision, obsIsAnyOverlayShowing.observable());
 initTitleSync(revision);
 obsForgeIsShowing.
     zipLatest(obsExportsIsShowing, (e1, e2) => e1 || e2).

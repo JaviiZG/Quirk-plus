@@ -131,7 +131,7 @@ Gates.KnownToSerializer = [
     ...InputGates.all,
     MeasurementGate,
     SwapGateHalf,
-    SpacerGate,
+    ...SpacerGate.all,
     UniversalNotGate,
     ErrorInjectionGate,
     ZeroGate,
@@ -346,7 +346,7 @@ Gates.BottomToolboxGroups = [
     {
         hint: 'Scalar',
         gates: [
-            SpacerGate, ZeroGate,
+            SpacerGate.ofSize(1), ZeroGate,
             NeGate, undefined,
             ImaginaryGate, AntiImaginaryGate,
             SqrtImaginaryGate, AntiSqrtImaginaryGate,
